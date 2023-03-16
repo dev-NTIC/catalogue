@@ -1,5 +1,5 @@
 const File = require("../models/files");
-let domain = `${process.env.HOST}$s{process.env.PORT}` + "/data/";
+let domain = `${process.env.HOST}` + "/data/";
 
 exports.getFiles = async (req, res, next) => {
     const { type } = req.body;
