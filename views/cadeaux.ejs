@@ -1,0 +1,194 @@
+<%- include('base/header.ejs') %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card my-4">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="pageTab">
+          <h6>Cadeaux</h6>
+          <button type="button" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="resetForm()">Ajouter</button>
+        </div>
+      </div>
+      <div class="card-body px-0 pb-2">
+        <div class="table-responsive p-0">
+
+          <table class="table align-items-center mb-0">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="width: 50px;">Image</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Titre</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Points</th>
+                <th id="thControl"></th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              <% if (data.length != 0){ %> 
+                <% for (let cadeau of data) { %>
+                  <tr>
+                    <td>
+                      <img src="<%= cadeau.photo %>" alt="IMG" height="60px" style="margin: 0 20px;">
+                    </td>
+
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= cadeau.title %></p>
+                    </td>
+
+                    <td class="align-middle text-center text-sm">
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= cadeau.points %></p>
+                    </td>
+
+                    <td class="catPanel" class="align-middle">
+                      <button id="editBtn" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="editForm('<%= cadeau.id %>')"></button>
+                      <button id="deleteBtn" data-bs-toggle="modal" data-bs-target="#deleteButton" onclick="deleteForm('<%= cadeau.id %>')"></button>
+                    </td>
+                    
+                  </tr>
+                <% } %>
+              <% } else{ %>
+                <tr>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                </tr>
+              <% } %> 
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ---------------------- DELETE DATA POPUP -------------------- -->
+<div class="modal fade" id="deleteButton" tabindex="-1" role="dialog" aria-labelledby="deleteButtonLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-normal" id="deleteButtonLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this record?
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn bg-gradient-secondary m-0" data-bs-dismiss="modal">Cancel</button>
+        <form id="deleteForm" method="delete">
+          <input type="hidden" name="id">
+          <button type="submit" class="btn bg-gradient-primary m-0">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- -------------------- CREATE NEW DATA POPUP------------------- -->
+<div class="col-md-6">
+  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-body p-0">
+          <div class="card card-plain">
+            <div class="card-header pb-0 text-left">
+              <h5 class="text-center"></h5>
+            </div>
+            <div class="card-body">
+              <form id="createForm" class="row" method="POST" enctype="multipart/form-data">
+
+                <div class="col-8">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Titre *</label>
+                    <input type="text"  id="title" name="title" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Points *</label>
+                    <input type="number" name="points" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                  </div>
+                </div>
+
+                <div class="file-input col-12">
+                  <div class="input-group input-group-outline my-3 border rounded p-2" style="display: flex; flex-direction: column;">
+                    <label>Photo</label>
+                    <input type="file" name="photo" style="font-size: 14px;">
+                  </div>
+                </div>
+
+                <input type="hidden" name="pre_photo">
+
+                <input type="hidden" name="id">
+                  
+                <div class="text-center">
+                  <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0"></button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  //------------------ activate page button ------------------
+  $("#pageTitle").html('Cadeaux');
+  $("#cadeauxLink").addClass('active bg-gradient-primary');
+  // ------------------- edit data record --------------------
+  function editForm(id){
+    const cadeaux =  JSON.parse(`<%- JSON.stringify(data) %>`);
+    let cadeau = cadeaux.find(x => x.id == id);
+
+    $("#createForm input[name='title']").val(cadeau.title);
+    $("#createForm input[name='points']").val(cadeau.points);
+    $("#createForm input[name='pre_photo']").val(cadeau.photo);
+
+    $("#createForm input[name='id']").val(id);
+
+    $("#createForm .input-group").addClass('focused is-filled');
+    $('#modal-form h5').html('Mettre à jour le cadeau');
+    $("#createForm button").html('Mettre à jour');
+  }
+  // --------------------- reset form  ----------------------
+  function resetForm(){
+    $("#createForm input[name='id']").val(null);
+
+    $("#createForm .input-group").removeClass('focused is-filled');
+    $('#modal-form h5').html('Créer un cadeau');
+    $("#createForm button").html('Créer');
+    $("#createForm")[0].reset();
+  }
+
+  $('#createForm').submit((event) => {
+    let idUpdate = $("#createForm input[name='id']").val();
+    if (idUpdate){
+      $('#createForm').attr('action', "/cadeaux/update/");
+    } else {
+      $('#createForm').attr('action', "");
+    }
+  });
+
+  // ------------------- delete data record --------------------
+  function deleteForm(id){
+    $('#deleteForm input').val(id);
+  };
+
+  $('#deleteForm').submit((event) => {
+    event.preventDefault();
+    $.ajax({
+      type: 'DELETE',
+      url: '',
+      data: {
+        id: $('#deleteForm input').val()
+      },
+      success: function() {
+        location.reload();
+      }
+    })
+  });
+</script>
+
+<%- include('base/footer.ejs') %> 

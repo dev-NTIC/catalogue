@@ -1,0 +1,196 @@
+    <%- include('base/header.ejs') %>
+     
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="pageTab">
+                <h6>Bons des commandes</h6>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              <div class="table-responsive p-0">
+
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">N°</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">PDV</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+                      <th id="thControl"></th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>
+                    <% if (data.length != 0){ %> 
+                      <% for (let commande of data) { %>
+                        <tr>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= commande.number %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= commande.pdvname %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= commande.status %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= commande.date.toISOString().substring(0, 10) %></p>
+                          </td>
+                          <td class="catPanel" class="align-middle">
+                            <button id="detailsBtn" data-bs-toggle="modal" data-bs-target="#modal-details" onclick="showDetails('<%= commande.id %>', '<%= commande.number %>')"></button>
+                            <button id="editBtn" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="editForm('<%= commande.id %>')"></button>
+                            
+                          </td>
+                        </tr>
+                      <% } %>
+                    <% } else{ %>
+                      <tr>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                      </tr>
+                    <% } %> 
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- ---------------------- DELETE DATA POPUP -------------------- -->
+
+<!-- -------------------- CREATE NEW DATA POPUP------------------- -->
+      <div class="col-md-6">
+        <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+              <div class="modal-body p-0">
+                <div class="card card-plain">
+                  <div class="card-header pb-0 text-left">
+                    <h5 class="text-center"></h5>
+                  </div>
+                  <div class="card-body">
+                    <form id="createForm" class="row" method="POST">
+
+                      <div class="input-group input-group-outline my-3">
+                        <select class="form-control" name="status" required>
+                          <option value="">Status *</option>
+                          <% for (let s of allStatus) {%>
+                            <option value="<%= s.id %>"><%= s.status %></option>
+                          <% } %> 
+                        </select>
+                      </div>
+
+                      <input type="hidden" name="id">
+                        
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0"></button>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- -------------------- DETAILS (PRODUCT LIST)------------------- -->
+      <div class="col-md-6">
+        <div class="modal fade" id="modal-details" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+              <div class="modal-body p-0">
+                <div class="card card-plain">
+                  <div class="card-header pb-0 text-left">
+                    <h5 class="text-center">Liste des produits pour le bons n° <span></span></h5>
+                  </div>
+                  <div class="card-body">
+                    <table id="productListTable">
+                      <thead>
+                        <tr>
+                          <th>MODEL</th>
+                          <th>CATEGORY</th>
+                          <th>TAILLE</th>
+                          <th>OS</th>
+                          <th>PRIX</th>
+                          <th>QTY</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                      <img id="progress" src="../img/progress.svg" alt="">
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script>
+        
+        //------------------ activate page button ------------------
+        $("#pageTitle").html('Commandes Produits');
+        $("#commandeProduitLink").addClass('active bg-gradient-primary');
+        // ---------- display products for each commande --------
+        function showDetails(id, number){
+          $('#modal-details h5 span').html(number);
+          $('#modal-details img').show();
+          $('#productListTable tbody').empty();
+          $.ajax({
+            type: 'GET',
+            url: `/commandes/${id}`,
+            success: function(products) {
+              $('#modal-details img').hide();
+              $.each(products, function(index, value){
+                $('#productListTable tbody').append(`
+                <tr>
+                  <td>${value.model}</td>
+                  <td>${value.category}</td>
+                  <td>${value.size}</td>
+                  <td>${value.os}</td>
+                  <td>${value.price}</td>
+                  <td>${value.qty}</td>
+                </tr>
+                `)
+              })
+            }
+          })
+        }
+        // ------------------- edit data record --------------------
+        const commandes =  JSON.parse(`<%- JSON.stringify(data) %>`);
+
+        function editForm(id){
+          let commande = commandes.find(x => x.id == id);
+          $("#createForm select[name='status']").val(commande.status_id);
+          $("#createForm input[name='id']").val(id);
+
+          $("#createForm .input-group").addClass('focused is-filled');
+          $('#modal-form h5').html('Mettre à jour le bon de commande');
+          $("#createForm button").html('Mettre à jour');
+        }
+        // ------------------- update data record --------------------
+        $('#createForm').submit((event) => {
+          let idUpdate = $("#createForm input[name='id']").val();
+          if (idUpdate){
+            event.preventDefault();
+            $.ajax({
+              type: 'PATCH',
+              url: '',
+              data: {
+                id: $("#createForm input[name='id']").val(),
+                status_id: $("#createForm select[name='status']").val()
+              },
+              success: function() {
+                location.reload();
+              }
+            })
+          }
+        });
+      </script>
+
+      <%- include('base/footer.ejs') %> 

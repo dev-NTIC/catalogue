@@ -1,0 +1,342 @@
+    <%- include('base/header.ejs') %>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="pageTab">
+                <h6>PDV</h6>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="resetForm()">Ajouter</button>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              <div class="table-responsive p-0">
+
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">PDV</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom/Prenom</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Téléphone</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Localisation</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Points</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Superviseur</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Adresse</th>
+                      <th  id="thControl"></th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>
+                    <% if (data.length != 0){ %> 
+                      <% for (let pdv of data) { %>
+                        <tr>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= pdv.pdvname %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= pdv.contactname %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= pdv.phone %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <a href="https://<%= pdv.location %>" style="text-decoration: underline;" target="_blank">open</a>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= pdv.points %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= pdv.status %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= pdv.nom %> <%= pdv.prenom %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center">
+                              <%= pdv.address %>
+                              <%= pdv.commun %>
+                              <%= pdv.daira %>
+                              <%= pdv.wilaya %>
+                            </p>
+                          </td>
+                          <td class="catPanel" class="align-middle">
+                            <button id="editBtn" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="edit(`<%= pdv.id %>`)"></button>
+                          </td>
+                        </tr>
+                      <% } %>
+                    <% } else{ %>
+                      <tr>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                      </tr>
+                    <% } %> 
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+              <div class="modal-body p-0">
+                <div class="card card-plain">
+                  <div class="card-header pb-0 text-left">
+                    <h5 class="text-center"></h5>
+                  </div>
+                  <div class="card-body">
+                    <form id="createForm" class="row" method="POST">
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Titre de PDV *</label>
+                          <input type="text" name="pdvname" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+                      
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Nom & Prenom *</label>
+                          <input type="text" name="contactname" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Téléphone *</label>
+                          <input type="number" name="phone" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Localisation *</label>
+                          <input type="text" name="location" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-12">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Adresse *</label>
+                          <input type="text" name="address" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-4">
+                        <div class="input-group input-group-outline my-3">
+                          <select id="wilaya" name="wilaya" class="form-control" required>
+                            <option value="">Wilaya *</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-4">
+                        <div class="input-group input-group-outline my-3">
+                          <select id="daira" name="daira" class="form-control" required>
+                            <option value="">Daira *</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-4">
+                        <div class="input-group input-group-outline my-3">
+                          <select id="commune" name="commune" class="form-control" required>
+                            <option value="">Commune *</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <select class="form-control" name="pdvstatus_id" required>
+                            <option value="">Status *</option>
+                            <% for (let pdvstatus of pdvStatus) {%>
+                              <option value="<%= pdvstatus.id %>"><%= pdvstatus.status %></option>
+                            <% } %> 
+                          </select>
+                        </div>
+                      </div>
+
+                      
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <select class="form-control" name="user_id" required>
+                            <option value="">Superviseur *</option>
+                            <% for (let user of users) {%>
+                              <option value="<%= user.id %>"><%= user.nom %> <%= user.prenom %></option>
+                            <% } %> 
+                          </select>
+                        </div>
+                      </div>
+
+                      <hr class="specialParts" style="height: 1px; background: grey; margin: 10px 0;">
+
+                      <div class="col-6 specialParts">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Username *</label>
+                          <input type="text" name="username" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-6 specialParts">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Password *</label>
+                          <input type="password" name="password" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <input type="hidden" name="id">
+                        
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Create</button>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script>
+        //------------------ activate page button ------------------
+        $("#pageTitle").html('PDV');
+        $("#pdvLink").addClass('active bg-gradient-primary');
+        // ------------- rander wilaya values -----------------
+        let country =  JSON.parse(`<%- JSON.stringify(algeria) %>`);
+        var wilayas = [];
+
+        $.each(country, (i, obj) => {
+          if ($.inArray(obj.wilaya, wilayas) == -1){
+            wilayas.push(obj.wilaya);
+          }
+        });
+        
+        $.each(wilayas, ( index, value ) => {
+          $( "#wilaya" ).append(`<option value='${value}'>${value}</option>`);
+        });
+        // --------------- render daira values -----------------
+        $( "#wilaya" ).change(function() {
+          $( "#daira" ).empty();
+          $( "#daira" ).append(`<option value=''>Daira *</option>`);
+          $("#commune").empty();
+          $("#commune").append(`<option value=''>Commune *</option>`);
+          
+          var wilaya = $(this).val();
+          var dairas = [];
+
+          if (wilaya) {
+            $.each(country, (i, obj) => {
+              if (obj.wilaya == wilaya && $.inArray(obj.daira, dairas) == -1){
+                dairas.push(obj.daira);
+              }
+            });
+
+            $.each(dairas, ( index, value ) => {
+              $("#daira").append(`<option value='${value}'>${value}</option>`);
+            });
+          }
+        });
+        // --------------- render commune values -----------------
+        $( "#daira" ).change(function() {
+          $("#commune").empty();
+          $("#commune").append(`<option value=''>Commune *</option>`);
+          
+          var daira = $(this).val();
+
+          if (daira) {
+            $.each(country, (i, obj) => {
+              if (obj.daira == daira){
+                $("#commune").append(`<option value='${obj.commune}'>${obj.commune}</option>`);
+              }
+            });
+          }
+        });
+        // ------------------- edit data record --------------------
+
+        function edit(id){
+          const allPdv =  JSON.parse(`<%- JSON.stringify(data) %>`);
+          let pdv = allPdv.find(x => x.id == id);
+
+          $("#createForm input[name='pdvname']").val(pdv.pdvname);
+          $("#createForm input[name='contactname']").val(pdv.contactname);
+          $("#createForm input[name='phone']").val(pdv.phone);
+          $("#createForm input[name='location']").val(pdv.location);
+          $("#createForm input[name='address']").val(pdv.address);
+          $("#createForm select[name='wilaya']").val(pdv.wilaya);
+          $('#wilaya').trigger('change');
+          $("#createForm select[name='daira']").val(pdv.daira);
+          $('#daira').trigger('change');
+          $("#createForm select[name='commune']").val(pdv.commune);
+          $("#createForm select[name='pdvstatus_id']").val(pdv.pdvstatus_id);
+          $("#createForm select[name='user_id']").val(pdv.user_id);
+
+          $("#createForm input[name='username']").prop('required',false);
+          $("#createForm input[name='password']").prop('required',false);
+          $(".specialParts").hide();
+          $(".specialParts").hide();
+
+          $("#createForm input[name='id']").val(id);
+          $("#createForm .input-group").addClass('focused is-filled');
+          $('#modal-form h5').html("Mettre à jour le PDV");
+          $("#createForm button").html('Mettre à jour');
+          $('.file-input').hide();
+        }
+        // --------------------- reset form  ----------------------
+        function resetForm(){
+          $("#createForm input[name='username']").prop('required',true);
+          $("#createForm input[name='password']").prop('required',true);
+          $(".specialParts").show();
+          $(".specialParts").show();
+
+          $("#createForm input[name='id']").val(null)
+          $("#createForm .input-group").removeClass('focused is-filled');
+          $('#modal-form h5').html('Créer un PDV');
+          $("#createForm button").html('Créer');
+          $('.file-input').show();
+          $("#createForm")[0].reset();
+        }
+        // ------------------- update data record --------------------
+        $('#createForm').submit((event) => {
+          let idUpdate = $("#createForm input[name='id']").val();
+          if (idUpdate){
+            event.preventDefault();
+            $.ajax({
+              type: 'PATCH',
+              url: '',
+              data: {
+                id: $("#createForm input[name='id']").val(),
+                pdvname: $("#createForm input[name='pdvname']").val(),
+                contactname: $("#createForm input[name='contactname']").val(),
+                phone: $("#createForm input[name='phone']").val(),
+                location: $("#createForm input[name='location']").val(),
+                address: $("#createForm input[name='address']").val(),
+                wilaya: $("#createForm select[name='wilaya']").val(),
+                daira: $("#createForm select[name='daira']").val(),
+                commune: $("#createForm select[name='commune']").val(),
+                pdvstatus_id: $("#createForm select[name='pdvstatus_id']").val(),
+                user_id: $("#createForm select[name='user_id']").val()
+              },
+              success: function() {
+                location.reload();
+              }
+            })
+          }
+        })
+      </script>
+
+      <%- include('base/footer.ejs') %> 

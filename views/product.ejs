@@ -1,0 +1,401 @@
+<%- include('base/header.ejs') %>
+     
+<div class="row">
+  <div class="col-12">
+    <div class="card my-4">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="pageTab">
+          <h6>Produits</h6>
+          <button type="button" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="resetForm()">Ajouter</button>
+        </div>
+      </div>
+      <div class="card-body px-0 pb-2">
+        <div class="table-responsive p-0">
+
+          <table class="table align-items-center mb-0">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Image</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Modèle</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Categorie</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Taille</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">OS</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Prix</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Points</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nouveau</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Disponibilité</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Top vente</th>
+                <th id="thControl"></th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              <% if (data.length != 0){ %> 
+                <% for (let product of data) { %>
+                  <tr>
+                    <td>
+                      <img src="<%= product.productimg %>" alt="IMG" height="60px" style="margin: 0 20px;">
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= product.model %></p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= product.category %></p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= product.size %> "</p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= product.os %></p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= product.price %> DA</p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <p class="text-xs font-weight-bold mb-0 text-center"><%= product.points %></p>
+                    </td>
+
+                    <% if (product.is_new == 'true') {%> 
+                      <td class="align-middle text-center text-sm">
+                        <p class="text-xs font-weight-bold mb-0 text-center">Oui</p>
+                      </td>
+                    <% } else { %> 
+                      <td class="align-middle text-center text-sm">
+                        <p class="text-xs font-weight-bold mb-0 text-center">Non</p>
+                      </td>
+                    <% } %>
+
+                    <% if (product.is_available == 'true') {%> 
+                      <td class="align-middle text-center text-sm">
+                        <p class="text-xs font-weight-bold mb-0 text-center">Oui</p>
+                      </td>
+                    <% } else { %> 
+                      <td class="align-middle text-center text-sm">
+                        <p class="text-xs font-weight-bold mb-0 text-center">Non</p>
+                      </td>
+                    <% } %>
+
+                    <% if (product.is_bestselling == 'true') {%> 
+                      <td class="align-middle text-center text-sm">
+                        <p class="text-xs font-weight-bold mb-0 text-center">Oui</p>
+                      </td>
+                    <% } else { %> 
+                      <td class="align-middle text-center text-sm">
+                        <p class="text-xs font-weight-bold mb-0 text-center">Non</p>
+                      </td>
+                    <% } %>
+
+                    <td class="catPanel" class="align-middle">
+                      <button id="editBtn" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="editForm('<%= product.id %>')"></button>
+                    </td>
+                  </tr>
+                <% } %>
+              <% } else{ %>
+                <tr>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                  <td class="text-center">-</td>
+                </tr>
+              <% } %> 
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ---------------------- DELETE DATA POPUP -------------------- -->
+
+<!-- -------------------- CREATE NEW DATA POPUP------------------- -->
+<div class="col-md-6">
+  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-body p-0">
+          <div class="card card-plain">
+            <div class="card-header pb-0 text-left">
+              <h5 class="text-center"></h5>
+            </div>
+            <div class="card-body">
+              <form id="createForm" class="row" method="POST" enctype="multipart/form-data">
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Modèle *</label>
+                    <input type="text" name="model" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <select class="form-control" name="category_id" required>
+                      <option value="">Categorie *</option>
+                      <% for (let c of categories) {%>
+                        <option value="<%= c.id %>"><%= c.category %></option>
+                      <% } %> 
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Taille *</label>
+                    <input type="number" name="size" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">OS *</label>
+                    <input type="text" name="os" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Prix *</label>
+                    <input type="number" name="price" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Points *</label>
+                    <input type="number" name="points" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                  </div>
+                </div>
+                
+                <div class="form-check form-switch">
+                  <input class="form-check-input" name="is_new" type="checkbox">
+                  <label class="form-check-label m-0" for="is_new">Nouveau produit</label>
+                </div>
+
+                <div class="form-check form-switch">
+                  <input class="form-check-input" name="is_available" type="checkbox">
+                  <label class="form-check-label m-0" for="is_available">Produit disponible</label>
+                </div>
+
+                <div class="form-check form-switch">
+                  <input class="form-check-input" name="is_bestselling" type="checkbox">
+                  <label class="form-check-label m-0" for="is_bestselling">Produit le plus vendu</label>
+                </div>
+
+                <hr style="height: 1px; background: grey; margin: 10px 0;">
+
+                <div class="col-4">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">RAM</label>
+                    <input type="number" name="ram" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">ROM</label>
+                    <input type="number" name="rom" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Poids</label>
+                    <input type="number" step="any" name="weight" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">HDMI</label>
+                    <input type="number" name="hdmi" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">USB</label>
+                    <input type="number" name="usb" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">VGA</label>
+                    <input type="number" name="vga" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Dimensions</label>
+                    <input type="text" name="dimensions" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Ancien prix</label>
+                    <input type="number" name="oldprice" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Rating</label>
+                    <input type="number" name="rating" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="input-group input-group-outline my-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" id="" cols="30" rows="5" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)"></textarea>
+                  </div>
+                </div>
+
+                <div class="file-input col-6">
+                  <div class="input-group input-group-outline my-3 border rounded p-2">
+                    <label>Image (50X50)</label>
+                    <input type="file" name="productimg" style="font-size: 14px;">
+                  </div>
+                </div>
+                
+                <div class="file-input col-6">
+                  <div class="input-group input-group-outline my-3 border rounded p-2">
+                    <label>Image (300X300)</label>
+                    <input type="file" name="banner" style="font-size: 14px;">
+                  </div>
+                </div>
+
+                <div class="file-input col-12">
+                  <div class="input-group input-group-outline my-3 border rounded p-2" style="display: flex; flex-direction: column;">
+                    <label>Tech sheet</label>
+                    <input type="file" name="techsheet" style="font-size: 14px;">
+                  </div>
+                </div>
+
+                <div class="fpl">
+                  <div class="form-check">
+                    <input class="form-check-input" name="wifi" type="checkbox">
+                    <label class="form-check-label" for="wifi">
+                      WiFi
+                    </label>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" name="bluetooth" type="checkbox">
+                    <label class="form-check-label" for="bluetooth">
+                      BlueTooth
+                    </label>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" name="earphone" type="checkbox">
+                    <label class="form-check-label" for="earphone">
+                      Earphone
+                    </label>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" name="ethernet" type="checkbox">
+                    <label class="form-check-label" for="ethernet">
+                      Ethernet
+                    </label>
+                  </div>
+                </div>
+
+                <input type="hidden" name="pre_productimg">
+                <input type="hidden" name="pre_banner">
+                <input type="hidden" name="pre_techsheet">
+
+                <input type="hidden" name="id">
+                  
+                <div class="text-center">
+                  <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0"></button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  //------------------ activate page button ------------------
+  $("#pageTitle").html('Produits');
+  $("#productLink").addClass('active bg-gradient-primary');
+  // ------------------- edit data record --------------------
+
+  function editForm(id){
+    const produits =  JSON.parse(`<%- JSON.stringify(data) %>`);
+    let p = produits.find(x => x.id == id);
+
+    $("#createForm input[name='model']").val(p.model);
+    $("#createForm select[name='category_id']").val(p.category_id);
+    $("#createForm input[name='size']").val(p.size);
+    $("#createForm input[name='os']").val(p.os);
+    $("#createForm input[name='price']").val(p.price);
+    $("#createForm input[name='points']").val(p.points);
+
+    if(p.is_new == 'true'){$("#createForm input[name='is_new']").prop('checked', true)};
+    if(p.is_available == 'true'){$("#createForm input[name='is_available']").prop('checked', true)};
+    if(p.is_bestselling == 'true'){$("#createForm input[name='is_bestselling']").prop('checked', true)};
+
+    $("#createForm input[name='ram']").val(p.ram);
+    $("#createForm input[name='rom']").val(p.rom);
+    $("#createForm input[name='weight']").val(p.weight);
+    $("#createForm input[name='hdmi']").val(p.hdmi);
+    $("#createForm input[name='usb']").val(p.usb);
+    $("#createForm input[name='vga']").val(p.vga);
+
+    $("#createForm input[name='dimensions']").val(p.dimensions);
+
+    $("#createForm input[name='oldprice']").val(p.oldprice);
+    $("#createForm input[name='rating']").val(p.rating);
+    $("#createForm textarea[name='description']").val(p.description);
+
+    if(p.wifi == 'true'){$("#createForm input[name='wifi']").prop('checked', true)};
+    if(p.bluetooth == 'true'){$("#createForm input[name='bluetooth']").prop('checked', true)};
+    if(p.earphone == 'true'){$("#createForm input[name='earphone']").prop('checked', true)};
+    if(p.ethernet == 'true'){$("#createForm input[name='ethernet']").prop('checked', true)};
+
+    $("#createForm input[name='pre_productimg']").val(p.productimg);
+    $("#createForm input[name='pre_banner']").val(p.banner);
+    $("#createForm input[name='pre_techsheet']").val(p.techsheet);
+
+    $("#createForm input[name='id']").val(id);
+
+    $("#createForm .input-group").addClass('focused is-filled');
+    $('#modal-form h5').html('Mettre à jour le produit');
+    $("#createForm button").html('Mettre à jour');
+  }
+  // --------------------- reset form  ----------------------
+  function resetForm(){
+    $("#createForm input[name='id']").val(null);
+
+    $("#createForm .input-group").removeClass('focused is-filled');
+    $('#modal-form h5').html('Créer un produit');
+    $("#createForm button").html('Créer');
+    $("#createForm")[0].reset();
+  }
+
+  $('#createForm').submit((event) => {
+    let idUpdate = $("#createForm input[name='id']").val();
+    if (idUpdate){
+      $('#createForm').attr('action', "/produits/update/");
+    } else {
+      $('#createForm').attr('action', "");
+    }
+  });
+</script>
+
+<%- include('base/footer.ejs') %> 

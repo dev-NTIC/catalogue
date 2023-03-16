@@ -1,0 +1,217 @@
+    <%- include('base/header.ejs') %>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="pageTab">
+                <h6>Utilisateurs</h6>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="resetForm()">Ajouter</button>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              <div class="table-responsive p-0">
+
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Nom</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Prenom</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Téléphone</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Adresse mail</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
+                      <th id="thControl"></th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>
+                    <% if (data.length != 0){ %> 
+                      <% for (let user of data) { %>
+                        <tr>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= user.nom %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= user.prenom %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= user.phone %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= user.email %></p>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <p class="text-xs font-weight-bold mb-0 text-center"><%= user.type %></p>
+                          </td>
+                          <td class="catPanel" class="align-middle">
+                            <button id="editBtn" data-bs-toggle="modal" data-bs-target="#modal-form" onclick="editUser('<%= user.id %>')"></button>
+                          </td>
+                        </tr>
+                      <% } %>
+                    <% } else{ %>
+                      <tr>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                      </tr>
+                    <% } %> 
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- ---------------------- DELETE DATA POPUP -------------------- -->
+
+<!-- -------------------- CREATE NEW DATA POPUP------------------- -->
+      <div class="col-md-6">
+        <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+              <div class="modal-body p-0">
+                <div class="card card-plain">
+                  <div class="card-header pb-0 text-left">
+                    <h5 class="text-center "></h5>
+                  </div>
+                  <div class="card-body">
+                    <form id="createForm" class="row" method="POST">
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Nom *</label>
+                          <input type="text" name="nom" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+                      
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Prenom *</label>
+                          <input type="text" name="prenom" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Téléphone *</label>
+                          <input type="text" name="phone" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Adresse mail *</label>
+                          <input type="text" name="email" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Mot de passe *</label>
+                          <input type="password" name="password" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+                      
+                      <div class="col-6">
+                        <div class="input-group input-group-outline my-3">
+                          <label class="form-label">Confirmation *</label>
+                          <input type="password" name="confirm" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        </div>
+                      </div>
+
+                      <small class="d-none text-center text-danger">La confirmation du mot de passe ne correspond pas</small>
+
+                      <div class="input-group input-group-outline my-3">
+                        <select class="form-control" name="usertype_id" required>
+                          <option value="">Type *</option>
+                          <% for (let usertype of userType) {%>
+                            <option value="<%= usertype.id %>"><%= usertype.type %></option>
+                          <% } %> 
+                        </select>
+                      </div>
+
+                      <input type="hidden" name="id">
+                        
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0"></button>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script>
+        //------------------ activate page button ------------------
+        $("#pageTitle").html('Utilisateurs');
+        $("#userLink").addClass('active bg-gradient-primary');
+        // ------------------- edit data record --------------------
+        const users =  JSON.parse(`<%- JSON.stringify(data) %>`);
+
+        function editUser(id){
+          let user = users.find(x => x.id == id);
+
+          $("#createForm input[name='nom']").val(user.nom);
+          $("#createForm input[name='prenom']").val(user.prenom);
+          $("#createForm input[name='phone']").val(user.phone);
+          $("#createForm input[name='email']").val(user.email);
+          $("#createForm input[name='password']").val(user.password);
+          $("#createForm input[name='confirm']").val(user.password);
+          $("#createForm select[name='usertype_id']").val(user.usertype_id);
+
+          $("#createForm input[name='id']").val(id);
+          $("#createForm .input-group").addClass('focused is-filled');
+          $('#modal-form h5').html("Mettre à jour l'utilisateur");
+          $("#createForm button").html('Mettre à jour');
+        }
+        // --------------------- reset form  ----------------------
+        function resetForm(){
+          $("#createForm input[name='id']").val(null)
+          $("#createForm .input-group").removeClass('focused is-filled');
+          $('#modal-form h5').html('Créer un utilisateur');
+          $("#createForm button").html('Créer');
+          $("#createForm")[0].reset();
+        }
+        // ------------------- create/update data record --------------------
+        $('#createForm').submit((event) => {
+          let idUpdate = $("#createForm input[name='id']").val();
+          let password = $("#createForm input[name='password']").val();
+          let confirm = $("#createForm input[name='confirm']").val();
+          if (password != confirm) {
+            event.preventDefault();
+            $("#createForm small").removeClass('d-none');
+          }
+          else if (idUpdate){
+            event.preventDefault();
+            $.ajax({
+              type: 'PATCH',
+              url: '',
+              data: {
+                id: $("#createForm input[name='id']").val(),
+                nom: $("#createForm input[name='nom']").val(),
+                prenom: $("#createForm input[name='prenom']").val(),
+                phone: $("#createForm input[name='phone']").val(),
+                email: $("#createForm input[name='email']").val(),
+                password: $("#createForm input[name='password']").val(),
+                usertype_id: $("#createForm select[name='usertype_id']").val()
+              },
+              success: function() {
+                location.reload();
+              }
+            })
+          }
+        })
+        // ---------------- remove alert -----------------------
+        $("#createForm input[name='password']").on('input', () => {
+          $("#createForm small").addClass('d-none');
+        })
+      </script>
+
+      <%- include('base/footer.ejs') %> 
