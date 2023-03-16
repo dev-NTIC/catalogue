@@ -1,6 +1,9 @@
 const savController = require("../controllers/sav");
 const { getSAVs } = savController;
 
+const fileController = require("../controllers/files");
+const { getFiles } = fileController;
+
 const {
     readProductApi,
     readCategoriesApi,
@@ -18,5 +21,6 @@ router.get("/check/:username", checkUser);
 
 router.post("/signin", signinPost);
 router.post("/signup", signupPost);
+router.post("/files", getFiles);
 
 module.exports = router;
