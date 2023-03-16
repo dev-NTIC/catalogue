@@ -2,10 +2,10 @@ const File = require("../models/files");
 let domain = `${process.env.HOST}` + "/data/";
 
 exports.getFiles = async (req, res, next) => {
-    const { type } = req.body;
+    const { type } = req.params;
 
+    console.log("type : ", type);
     if (type.length > 0) {
-        console.log("type : ", type);
         const files = await File.getData(type);
         const data = files[0];
         console.log(data);

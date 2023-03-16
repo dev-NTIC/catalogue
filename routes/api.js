@@ -16,11 +16,11 @@ const router = express.Router();
 
 router.get("/produits", readProductApi);
 router.get("/sav", getSAVs);
+router.get("/files/:type", getFiles);
 router.get("/categories", readCategoriesApi);
 router.get("/check/:username", checkUser);
 
 router.post("/signin", signinPost);
 router.post("/signup", signupPost);
-router.post("/files", getFiles);
 
 module.exports = router;

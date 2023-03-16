@@ -93,11 +93,8 @@
     
     #_get media : 
         link : https://catalogue.streamsystem.com/api/files/:type
-        method : POST
+        method : GET
         body: //avialable types : video, splach, banner, pub
-            {
-                "type": "splach"
-            } 
         Result : 
             [
                 {
