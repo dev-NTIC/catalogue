@@ -1,3 +1,6 @@
+const savController = require("../controllers/sav");
+const { getSAVs } = savController;
+
 const {
     readProductApi,
     readCategoriesApi,
@@ -9,6 +12,7 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/produits", readProductApi);
+router.get("/sav", getSAVs);
 router.get("/categories", readCategoriesApi);
 router.get("/check/:username", checkUser);
 
