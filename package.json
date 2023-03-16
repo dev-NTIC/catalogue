@@ -1,0 +1,12 @@
+{
+    "name": "catalogue",
+    "version": "1.0.0",
+    "description": "catalogue app for stream products",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon index.js"
+    },
+    "author": "Bourouba ilyes",
+    "license": "ISC"
+}
