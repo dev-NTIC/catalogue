@@ -1,38 +1,39 @@
 const db = require("../config/db");
 
 module.exports = class ProductModel {
-  constructor() {}
+    constructor() {}
 
-  static async save(
-    model, 
-    category_id, 
-    size, 
-    os, 
-    price, 
-    points, 
-    is_new, 
-    is_available, 
-    is_bestselling, 
-    ram, 
-    rom, 
-    weight, 
-    hdmi, 
-    usb, 
-    vga, 
-    dimensions, 
+    static async save(
+        model,
+        category_id,
+        size,
+        os,
+        price,
+        points,
+        is_new,
+        is_available,
+        is_bestselling,
+        ram,
+        rom,
+        weight,
+        hdmi,
+        usb,
+        vga,
+        dimensions,
 
-    oldprice,
-    rating,
-    description,
-    productimg, 
-    banner, 
-    techsheet,
+        oldprice,
+        rating,
+        description,
+        productimg,
+        banner,
+        techsheet,
 
-    wifi, 
-    bluetooth, 
-    earphone, 
-    ethernet) {
-    let sql = `
+        wifi,
+        bluetooth,
+        earphone,
+        ethernet
+    ) {
+        let sql = `
     INSERT INTO product(
       model, 
       category_id, 
@@ -64,79 +65,79 @@ module.exports = class ProductModel {
       ethernet
     )
     VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-    await db.execute(sql, [
-      model, 
-      category_id, 
-      size, 
-      os, 
-      price, 
-      points, 
-      is_new, 
-      is_available, 
-      is_bestselling, 
-      ram, 
-      rom, 
-      weight, 
-      hdmi, 
-      usb, 
-      vga, 
-      dimensions, 
+        await db.execute(sql, [
+            model,
+            category_id,
+            size,
+            os,
+            price,
+            points,
+            is_new,
+            is_available,
+            is_bestselling,
+            ram,
+            rom,
+            weight,
+            hdmi,
+            usb,
+            vga,
+            dimensions,
 
-      oldprice,
-      rating,
-      description,
-      productimg, 
-      banner, 
-      techsheet,
+            oldprice,
+            rating,
+            description,
+            productimg,
+            banner,
+            techsheet,
 
-      wifi, 
-      bluetooth, 
-      earphone, 
-      ethernet
-    ]);
-  }
+            wifi,
+            bluetooth,
+            earphone,
+            ethernet,
+        ]);
+    }
 
-  static async read() {
-    let sql = `
-    SELECT P.id, model, category, size, os, price, points, is_new, is_available, is_bestselling, ram, rom, weight, hdmi, usb, vga, dimensions, wifi, bluetooth, earphone, ethernet, description, oldprice, rating, techsheet, productimg, banner, category_id
+    static async read() {
+        let sql = `
+    SELECT P.id, model, category, size, os, price, points, is_new, is_available, is_bestselling, ram, rom, weight, hdmi, usb, brightness, contrast, resolution, vga, dimensions, wifi, bluetooth, earphone, ethernet, description, oldprice, rating, techsheet, productimg, banner, category_id
     FROM product P
     JOIN productcategory PC ON P.category_id = PC.id
     `;
-    return await db.execute(sql);
-  }
-  
-  static async update(
-    model, 
-    category_id, 
-    size, 
-    os, 
-    price, 
-    points, 
-    is_new, 
-    is_available, 
-    is_bestselling, 
-    ram, 
-    rom, 
-    weight, 
-    hdmi, 
-    usb, 
-    vga, 
-    dimensions, 
+        return await db.execute(sql);
+    }
 
-    oldprice,
-    rating,
-    description,
-    productimg, 
-    banner, 
-    techsheet,
-    
-    wifi, 
-    bluetooth, 
-    earphone, 
-    ethernet,
-    id
-  ) {
-    let sql = `
+    static async update(
+        model,
+        category_id,
+        size,
+        os,
+        price,
+        points,
+        is_new,
+        is_available,
+        is_bestselling,
+        ram,
+        rom,
+        weight,
+        hdmi,
+        usb,
+        vga,
+        dimensions,
+
+        oldprice,
+        rating,
+        description,
+        productimg,
+        banner,
+        techsheet,
+
+        wifi,
+        bluetooth,
+        earphone,
+        ethernet,
+        id
+    ) {
+        let sql = `
     UPDATE product SET 
     model = ?, 
     category_id = ?, 
@@ -167,46 +168,46 @@ module.exports = class ProductModel {
     earphone = ?, 
     ethernet = ? 
     WHERE id = ?`;
-    await db.execute(sql, [
-      model, 
-      category_id, 
-      size, 
-      os, 
-      price, 
-      points, 
-      is_new, 
-      is_available, 
-      is_bestselling, 
-      ram, 
-      rom, 
-      weight, 
-      hdmi, 
-      usb, 
-      vga, 
-      dimensions, 
+        await db.execute(sql, [
+            model,
+            category_id,
+            size,
+            os,
+            price,
+            points,
+            is_new,
+            is_available,
+            is_bestselling,
+            ram,
+            rom,
+            weight,
+            hdmi,
+            usb,
+            vga,
+            dimensions,
 
-      oldprice,
-      rating,
-      description,
-      productimg, 
-      banner, 
-      techsheet,
+            oldprice,
+            rating,
+            description,
+            productimg,
+            banner,
+            techsheet,
 
-      wifi, 
-      bluetooth, 
-      earphone, 
-      ethernet,
-      id
-    ]);
-  }
+            wifi,
+            bluetooth,
+            earphone,
+            ethernet,
+            id,
+        ]);
+    }
 
-  static async delete(id) {
-    let sql = "DELETE FROM product WHERE id = ?";
-    await db.execute(sql, [id]);
-  }
+    static async delete(id) {
+        let sql = "DELETE FROM product WHERE id = ?";
+        await db.execute(sql, [id]);
+    }
 
-  static async category() {
-    let sql = 'SELECT * FROM productcategory';
-    return await db.execute(sql);
-  }
+    static async category() {
+        let sql = "SELECT * FROM productcategory";
+        return await db.execute(sql);
+    }
 };
