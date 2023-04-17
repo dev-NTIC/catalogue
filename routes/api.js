@@ -6,6 +6,9 @@ const { getSAVs } = savController;
 const fileController = require("../controllers/files");
 const { getFiles } = fileController;
 
+const clientController = require("../controllers/client");
+const { addInformation } = clientController;
+
 const {
     readProductApi,
     readCategoriesApi,
@@ -21,6 +24,8 @@ router.get("/sav", authMiddleware, getSAVs);
 router.get("/files/:type", authMiddleware, getFiles);
 router.get("/categories", authMiddleware, readCategoriesApi);
 router.get("/check/:username", authMiddleware, checkUser);
+
+router.post("/addinformation", authMiddleware, addInformation);
 
 router.post("/signin", signInAPI);
 router.post("/signup", signupPost);
