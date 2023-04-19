@@ -9,6 +9,9 @@ const { getFiles } = fileController;
 const clientController = require("../controllers/client");
 const { addInformation } = clientController;
 
+const pubController = require("../controllers/pub");
+const { getPub } = pubController;
+
 const {
     readProductApi,
     readCategoriesApi,
@@ -26,6 +29,7 @@ router.get("/categories", authMiddleware, readCategoriesApi);
 router.get("/check/:username", authMiddleware, checkUser);
 
 router.post("/addinformation", authMiddleware, addInformation);
+router.get("/getpub", authMiddleware, getPub);
 
 router.post("/signin", signInAPI);
 router.post("/signup", signupPost);

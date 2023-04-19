@@ -1,79 +1,56 @@
-#Login:
+#add informations:
 
-    link: /api/signin
+    link: /api/addinformation
     type: POST
     data: {
-        "user": "xxx",
-        "password": "xxx"
-    }
-
-    return : 
-        if correct info: 
-            status: 201,
-            data: 
-            {
-                "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-
-                "user": [
-                    {
-                        "id": 1,
-                        "nom": "BOUROUBA",
-                        "prenom": "ILYES",
-                        "phone": "0550124578",
-                        "email": "ilyes@gmail.com",
-                        "password": "0000",
-                        "usertype_id": 1
-                    }
-                ]
-            }
-        
-        if incorrect info :  
-            status: 401
-            data: {
-                "message": "Invalid credentials"
-            }
-
-#register:
-
-    link: /api/signup
-    type: POST
-    data: {
-            "nom": "xxx", 
-            "prenom": "xxx", 
-            "phone": "xxx", 
-            "email": "xxx", 
-            "password": "xxx"
+            "nom": "xxx",
+            "prenom": "xxx",
+            "phone": "xxx",
+            "wilaya": "xxx",
+            "adr": "xxx"
         }
 
-    return : 
+    return :
         if missing parameters :
-            status: 400 
+            status: 400
             data: {
                 "message": "missing parameters"
             }
-        
-        if user exists :
-            status: 400
+
+        if the server have some internal issues :
+            status: 500
             data: {
-                "message": "user already exists !"
+                "message": "Internal Server Error"
             }
 
-        user created : 
+        Information added :
         status: 201
         data: {
-            "message": "user created !"
+            "message": "Information added"
         }
 
+#pub :
+link: /api/getPub
+type: GET
 
-# to use any API you should send the token in header section.
+    return :
 
-if the token is NOT set : 
+        if the server have some internal issues :
+            status: 500
+            data: {
+                "message": "Internal Server Error"
+            }
 
-    status: 401
-    data:{ message: "Unauthorized" }
+        Information added :
+        status: 201
+        data: [
+            {
+                "id": 1,
+                "title": "title 1",
+                "content": "XXXXXX",
+                "img_url": "/uploads/1669281224366--IMG (300X300).png",
+                "link": "www.streamsystem.com",
+                "isactive": "oui"
+            }
 
-
-if the Token is invalid:
-
-    status: 401
-    data:{ message: "Invalid token" }
+        ]
