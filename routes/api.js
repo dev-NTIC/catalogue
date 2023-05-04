@@ -17,7 +17,7 @@ const {
     readCategoriesApi,
 } = require("../controllers/product.js");
 
-const { checkUser, signupPost, signInAPI } = require("../controllers/auth.js");
+const { checkUser, signupPost, signInAPI, checkMailApi } = require("../controllers/auth.js");
 
 const express = require("express");
 const router = express.Router();
@@ -33,6 +33,8 @@ router.get("/getpub", authMiddleware, getPub);
 
 router.post("/signin", signInAPI);
 router.post("/signup", signupPost);
+
+router.post("/checkmail", checkMailApi)
 
 function authMiddleware(req, res, next) {
     // Get the token from the request headers

@@ -1,7 +1,9 @@
 const UserModel = require("../models/user.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
 const db = require("../config/db");
+const transporter = require("../config/mail");
 
 exports.signinPost = async (req, res) => {
     const { username, password } = req.body;
@@ -97,6 +99,50 @@ exports.signupPost = async (req, res) => {
     res.status(201).json({ message: "user created !" });
 };
 
-// exports.signout = async (req, res) => {
-//   res.send('signout');
-// };
+exports.checkMailApi = async (req, res) => {
+    const { mail } = req.body;
+
+    if (!mail) {
+        res.status(400).json({ message: "missing parameters" });
+        return;
+    }
+
+    try {
+        console.log("mail => ", mail);
+        const check = await UserModel.checkUser("empty", mail);
+        console.log("check", check);
+
+        if (check) {
+            res.status(400).json({ message: "user exist" });
+            return;
+        }
+
+        res.status(201).json({ message: "user doesn't exists !" });
+        // send mail
+
+        const code = Math.floor(Math.random() * 100000)
+            .toString()
+            .padStart(5, "0");
+        console.log("generate code", code);
+        // setup email data with unicode symbols
+        // let mailOptions = {
+        //     from: "your-email@gmail.com",
+        //     to: "recipient-email@example.com",
+        //     subject: "Test Email",
+        //     text: "Hello World!",
+        //     html: "<b>Hello World!</b>",
+        // };
+
+        // // send mail with defined transport object
+        // transporter.sendMail(mailOptions, (error, info) => {
+        //     if (error) {
+        //         console.log(error);
+        //     } else {
+        //         console.log("Email sent: " + info.response);
+        //     }
+        // });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

@@ -61,4 +61,19 @@ module.exports = class UserModel {
             return false;
         }
     }
+
+    static async insertUserCode(id, mail, code) {
+        await db.execute(
+            "INSERT INTO `checkuser`(`id_client`, `mail`, `code`) VALUES (?, ?, ?)",
+            [id, mail, code]
+        );
+        return "done";
+    }
+
+    static async getUserCode(mail, code) {
+        return await db.execute(
+            "SELECT `id_client`, `mail`, `code` FROM `checkuser` WHERE `mail`= ? AND `code`=?",
+            [mail, code]
+        );
+    }
 };
