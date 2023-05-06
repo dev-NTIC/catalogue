@@ -44,15 +44,13 @@ module.exports = class UserModel {
 
     static async login(user, password) {
         return await db.execute(
-            "SELECT * FROM `user` WHERE (`phone` = ?  OR `email` = ?) AND `password` = ?",
-            [user, user, password]
+            "SELECT * FROM `user` WHERE (`phone` = ?  OR `email` = ?) AND `password` = ?", [user, user, password]
         );
     }
 
     static async checkUser(phone, email) {
         const data = await db.execute(
-            "SELECT * FROM `user` WHERE `phone` = ? OR `email` = ?",
-            [phone, email]
+            "SELECT * FROM `user` WHERE `phone` = ? OR `email` = ?", [phone, email]
         );
 
         if (data[0].length > 0) {
@@ -62,18 +60,38 @@ module.exports = class UserModel {
         }
     }
 
-    static async insertUserCode(id, mail, code) {
-        await db.execute(
-            "INSERT INTO `checkuser`(`id_client`, `mail`, `code`) VALUES (?, ?, ?)",
-            [id, mail, code]
+    static async checkMail(email) {
+        return await db.execute(
+            "SELECT * FROM `user` WHERE `email` = ?", [email]
         );
+    }
+
+    static async insertUserCode(id, mail, code) {
+        const data = await db.execute('SELECT * FROM checkuser WHERE id_client = ?', [id]);
+
+        if (data[0].length > 0) {
+
+            await db.execute(
+                "UPDATE `checkuser` SET `code`=? WHERE `id_client` = ?", [code, id]
+            );
+        } else {
+            await db.execute(
+                "INSERT INTO `checkuser`(`id_client`, `mail`, `code`) VALUES (?, ?, ?)", [id, mail, code]
+            );
+        }
         return "done";
+
     }
 
     static async getUserCode(mail, code) {
         return await db.execute(
-            "SELECT `id_client`, `mail`, `code` FROM `checkuser` WHERE `mail`= ? AND `code`=?",
-            [mail, code]
+            "SELECT `id_client`, `mail`, `code` FROM `checkuser` WHERE `mail`= ? AND `code`=?", [mail, code]
+        );
+    }
+
+    static async updatePassword(id, password) {
+        await db.execute(
+            "UPDATE `user` SET `password`=? WHERE `id`=?", [password, id]
         );
     }
 };

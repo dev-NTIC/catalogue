@@ -3,9 +3,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const db = require("../config/db");
-const transporter = require("../config/mail");
+const { resetEmailCode } = require("../config/mail");
 
-exports.signinPost = async (req, res) => {
+exports.signinPost = async(req, res) => {
     const { username, password } = req.body;
 
     let sql = `
@@ -33,7 +33,7 @@ exports.signinPost = async (req, res) => {
     }
 };
 
-exports.checkUser = async (req, res) => {
+exports.checkUser = async(req, res) => {
     const { username } = req.params;
 
     var sql = `SELECT * FROM pdv WHERE pdvname = ?;`;
@@ -47,7 +47,7 @@ exports.checkUser = async (req, res) => {
     res.status(200).send("available");
 };
 
-exports.signinGet = async (req, res) => {
+exports.signinGet = async(req, res) => {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash("toufik123", salt);
     console.log(hashedPassword);
@@ -57,7 +57,7 @@ exports.signinGet = async (req, res) => {
 
 // ? ILYES section :
 
-exports.signInAPI = async (req, res) => {
+exports.signInAPI = async(req, res) => {
     const { user, password } = req.body;
     console.log(`user ${user}, password ${password}`);
 
@@ -68,7 +68,7 @@ exports.signInAPI = async (req, res) => {
         console.log("loged in");
 
         // Generate a token
-        const token = jwt.sign({ ...getUser[0] }, "secret_key");
+        const token = jwt.sign({...getUser[0] }, "secret_key");
 
         // Return the token to the client
         res.status(201).json({ token, user: getUser[0] });
@@ -79,7 +79,7 @@ exports.signInAPI = async (req, res) => {
     }
 };
 
-exports.signupPost = async (req, res) => {
+exports.signupPost = async(req, res) => {
     const { nom, prenom, phone, email, password } = req.body;
     console.log(nom, prenom, phone, email, password, (usertype_id = 1));
 
@@ -99,7 +99,7 @@ exports.signupPost = async (req, res) => {
     res.status(201).json({ message: "user created !" });
 };
 
-exports.checkMailApi = async (req, res) => {
+exports.checkMailApi = async(req, res) => {
     const { mail } = req.body;
 
     if (!mail) {
@@ -109,40 +109,81 @@ exports.checkMailApi = async (req, res) => {
 
     try {
         console.log("mail => ", mail);
-        const check = await UserModel.checkUser("empty", mail);
-        console.log("check", check);
+        const user = await UserModel.checkMail(mail);
+        const userInfo = user[0];
 
-        if (check) {
-            res.status(400).json({ message: "user exist" });
+        if (userInfo.length == 0) {
+
+            res.status(400).json({ message: "user doesn't exists !" });
             return;
         }
-
-        res.status(201).json({ message: "user doesn't exists !" });
-        // send mail
-
         const code = Math.floor(Math.random() * 100000)
             .toString()
             .padStart(5, "0");
-        console.log("generate code", code);
-        // setup email data with unicode symbols
-        // let mailOptions = {
-        //     from: "your-email@gmail.com",
-        //     to: "recipient-email@example.com",
-        //     subject: "Test Email",
-        //     text: "Hello World!",
-        //     html: "<b>Hello World!</b>",
-        // };
 
-        // // send mail with defined transport object
-        // transporter.sendMail(mailOptions, (error, info) => {
-        //     if (error) {
-        //         console.log(error);
-        //     } else {
-        //         console.log("Email sent: " + info.response);
-        //     }
-        // });
+        await UserModel.insertUserCode(userInfo[0]["id"], userInfo[0]["email"], code);
+
+        const sendEmail = await resetEmailCode(code);
+
+        if (sendEmail) {
+            // mail sent
+            res.status(201).json({ message: "mail sent.", mail });
+        } else {
+            // error sending Mails
+            res.status(500).json({ message: "Email send failed !" });
+        }
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+exports.checkCodeApi = async(req, res) => {
+
+    const { code, mail } = req.body;
+    console.log("code => ", code, "mail => ", mail);
+
+    if (!mail || !code) {
+        res.status(400).json({ message: "missing parameters" });
+        return;
+    }
+
+    try {
+        const user = await UserModel.getUserCode(mail, code);
+        const userInfo = user[0];
+        console.log(userInfo)
+
+        if (userInfo.length == 0) {
+            res.status(400).json({ message: "wrong code" });
+            return;
+        } else {
+            res.status(201).json({ message: "correct code", id: userInfo[0]["id_client"] });
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+exports.updatePasswordApi = async(req, res) => {
+
+    const { id, password } = req.body;
+    console.log("id => ", id, "password => ", password);
+
+    if (!id || !password) {
+        res.status(400).json({ message: "missing parameters" });
+        return;
+    }
+    try {
+        await UserModel.updatePassword(id, password);
+        res.status(201).json({ message: "password updated" });
+
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+
+}
