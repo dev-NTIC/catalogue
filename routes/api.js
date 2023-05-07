@@ -9,6 +9,9 @@ const { getFiles } = fileController;
 const clientController = require("../controllers/client");
 const { addInformation } = clientController;
 
+const userController = require("../controllers/user");
+const { updateUser } = userController;
+
 const pubController = require("../controllers/pub");
 const { getPub } = pubController;
 
@@ -17,7 +20,14 @@ const {
     readCategoriesApi,
 } = require("../controllers/product.js");
 
-const { checkUser, signupPost, signInAPI, checkMailApi, checkCodeApi, updatePasswordApi } = require("../controllers/auth.js");
+const {
+    checkUser,
+    signupPost,
+    signInAPI,
+    checkMailApi,
+    checkCodeApi,
+    updatePasswordApi,
+} = require("../controllers/auth.js");
 
 const express = require("express");
 const router = express.Router();
@@ -37,6 +47,8 @@ router.post("/signup", signupPost);
 router.post("/checkmail", checkMailApi);
 router.post("/checkcode", checkCodeApi);
 router.post("/updatepassword", updatePasswordApi);
+
+router.post("/updateuser", updateUser);
 
 function authMiddleware(req, res, next) {
     // Get the token from the request headers
