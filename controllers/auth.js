@@ -113,7 +113,6 @@ exports.checkMailApi = async(req, res) => {
         const userInfo = user[0];
 
         if (userInfo.length == 0) {
-
             res.status(400).json({ message: "user doesn't exists !" });
             return;
         }
@@ -121,9 +120,13 @@ exports.checkMailApi = async(req, res) => {
             .toString()
             .padStart(5, "0");
 
-        await UserModel.insertUserCode(userInfo[0]["id"], userInfo[0]["email"], code);
+        await UserModel.insertUserCode(
+            userInfo[0]["id"],
+            userInfo[0]["email"],
+            code
+        );
 
-        const sendEmail = await resetEmailCode(code);
+        const sendEmail = await resetEmailCode(code, mail);
 
         if (sendEmail) {
             // mail sent
@@ -132,7 +135,6 @@ exports.checkMailApi = async(req, res) => {
             // error sending Mails
             res.status(500).json({ message: "Email send failed !" });
         }
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
@@ -140,7 +142,6 @@ exports.checkMailApi = async(req, res) => {
 };
 
 exports.checkCodeApi = async(req, res) => {
-
     const { code, mail } = req.body;
     console.log("code => ", code, "mail => ", mail);
 
@@ -152,23 +153,24 @@ exports.checkCodeApi = async(req, res) => {
     try {
         const user = await UserModel.getUserCode(mail, code);
         const userInfo = user[0];
-        console.log(userInfo)
+        console.log(userInfo);
 
         if (userInfo.length == 0) {
             res.status(400).json({ message: "wrong code" });
             return;
         } else {
-            res.status(201).json({ message: "correct code", id: userInfo[0]["id_client"] });
+            res.status(201).json({
+                message: "correct code",
+                id: userInfo[0]["id_client"],
+            });
         }
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
     }
-}
+};
 
 exports.updatePasswordApi = async(req, res) => {
-
     const { id, password } = req.body;
     console.log("id => ", id, "password => ", password);
 
@@ -179,11 +181,8 @@ exports.updatePasswordApi = async(req, res) => {
     try {
         await UserModel.updatePassword(id, password);
         res.status(201).json({ message: "password updated" });
-
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
     }
-
-}
+};

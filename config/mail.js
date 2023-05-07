@@ -1,21 +1,19 @@
 const nodemailer = require("nodemailer");
 
-
-exports.resetEmailCode = async(code) => {
-
+exports.resetEmailCode = async(code, mail) => {
     let transporter = nodemailer.createTransport({
-        host: 'sav.streamsystem.com',
+        host: "sav.streamsystem.com",
         port: 465,
         secure: true, // TLS requires secureConnection to be false
         auth: {
             user: "supportsav@sav.streamsystem.com",
             pass: "cc247843e22a158",
-        }
+        },
     });
 
     let mailOptions = {
         from: "supportsav@sav.streamsystem.com",
-        to: "ilyes.bourouba7@gmail.com",
+        to: mail,
         subject: "Stream App",
         text: "code : " + code,
         html: `<html>
@@ -35,11 +33,10 @@ exports.resetEmailCode = async(code) => {
     // send mail with defined transport object
     try {
         let info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
+        console.log("Email sent: " + info.response);
         return true;
     } catch (error) {
         console.log(error);
         return false;
     }
-
-}
+};
