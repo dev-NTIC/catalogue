@@ -1,56 +1,144 @@
-#add informations:
+# reset password:
 
-    link: /api/addinformation
-    type: POST
-    data: {
-            "nom": "xxx",
-            "prenom": "xxx",
-            "phone": "xxx",
-            "wilaya": "xxx",
-            "adr": "xxx"
-        }
+    1# cheking the mail :
 
-    return :
-        if missing parameters :
-            status: 400
-            data: {
-                "message": "missing parameters"
-            }
-
-        if the server have some internal issues :
-            status: 500
-            data: {
-                "message": "Internal Server Error"
-            }
-
-        Information added :
-        status: 201
+        link: /api/checkmail
+        type: POST
         data: {
-            "message": "Information added"
-        }
-
-#pub :
-link: /api/getPub
-type: GET
-
-    return :
-
-        if the server have some internal issues :
-            status: 500
-            data: {
-                "message": "Internal Server Error"
+                "mail": "xxx",
             }
 
-        Information added :
-        status: 201
-        data: [
-            {
-                "id": 1,
-                "title": "title 1",
-                "content": "XXXXXX",
-                "img_url": "/uploads/1669281224366--IMG (300X300).png",
-                "link": "www.streamsystem.com",
-                "isactive": "oui"
+        return :
+            if missing parameters :
+                status: 400
+                data: {
+                    "message": "missing parameters"
+                }
+            
+            if Internal Server Error
+                status: 500
+                    data: {
+                        "message": "Internal Server Error"
+                    }
+
+            if user doesn't exists :
+                status: 400
+                data: {
+                    "message": "user doesn't exists"
+                }
+            
+            if Email send failed
+                status: 500
+                    data: {
+                        "message": "Email send failed"
+                    }
+
+            if mail sent
+                status: 201
+                    data: {
+                        message: "mail sent.", 
+                        mail: xxx
+                    }
+
+    2# checkcode :
+
+    link: /api/checkcode
+        type: POST
+        data: {
+                "mail": "xxx",
+                "code": "xxxxx" // 5 digit
+            }
+        
+        return :
+            if missing parameters :
+                status: 400
+                data: {
+                    "message": "missing parameters"
+                }
+            
+            if Internal Server Error
+                status: 500
+                    data: {
+                        "message": "Internal Server Error"
+                    }
+            
+            if code wrong :
+                status: 400
+                data: {
+                    "message": "wrong code"
+                }
+            
+            if correct code :
+                status: 201
+                data: {
+                    message: "correct code",
+                    id: xxxx,
+                }
+
+
+    #3 update password :
+
+    link: /api/updatepassword
+        type: POST
+        data: {
+                id: xxx, 
+                password : xxxx
+            }
+        
+        return :
+            if missing parameters :
+                status: 400
+                data: {
+                    "message": "missing parameters"
+                }
+            
+            if Internal Server Error
+                status: 500
+                    data: {
+                        "message": "Internal Server Error"
+                    }
+
+            if password updated
+                status: 201
+                data: {
+                    "message": "password updated"
+                }
+
+
+# update user informations:
+
+link: /api/updateuser
+        type: POST
+        data: {
+                nom : xxx, 
+                prenom : xxx, 
+                phone : xxx, 
+                email : xxx, 
+                password : xxx, 
+                usertype_id : xxx, 
+                id : xxx
             }
 
-        ]
+        return :
+            if missing parameters :
+                status: 400
+                data: {
+                    "message": "missing parameters"
+                }
+            
+            if Internal Server Error
+                status: 500
+                    data: {
+                        "message": "Internal Server Error"
+                    }
+            
+            if information updated
+                status: 201
+                data: {
+                    "message": "information updated"
+                }
+
+
+
+
+
