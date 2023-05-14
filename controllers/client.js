@@ -1,25 +1,50 @@
 const ClientModel = require("../models/client.js");
 
-
-exports.read = async(req, res) => {
+exports.read = async (req, res) => {
     const data = await ClientModel.read();
     res.render("client", { data: data[0] });
 };
 
-exports.addInformation = async(req, res) => {
+exports.addInformation = async (req, res) => {
+    const { nom, prenom, phone, wilaya, adr, gender, status, age } = req.body;
 
-    const { nom, prenom, phone, wilaya, adr } = req.body;
-
-    if (!nom || !prenom || !phone || !wilaya || !adr) {
+    if (
+        !nom ||
+        !prenom ||
+        !phone ||
+        !wilaya ||
+        !adr ||
+        !gender ||
+        !status ||
+        !age
+    ) {
         res.status(400).json({ message: "missing parameters" });
         return;
     }
 
     try {
-        const data = await ClientModel.write(nom, prenom, phone, wilaya, adr);
-        res.status(201).json({ message: 'Information added' });
+        const checkClient = await ClientModel.checkClient(phone);
+
+        console.log(checkClient);
+
+        if (checkClient) {
+            res.status(400).json({ message: "user exists" });
+            return;
+        }
+
+        const data = await ClientModel.write(
+            nom,
+            prenom,
+            phone,
+            wilaya,
+            adr,
+            gender,
+            status,
+            age
+        );
+        res.status(201).json({ message: "Information added" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: "Internal Server Error" });
     }
-}
+};
