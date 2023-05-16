@@ -27,8 +27,6 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `checkuser`
 --
-CREATE DATABASE bomareco_catalogue;
-USE `bomareco_catalogue`;
 CREATE TABLE `checkuser` (
   `id_client` int(11) NOT NULL,
   `mail` varchar(255) NOT NULL,
