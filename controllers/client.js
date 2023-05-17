@@ -1,14 +1,15 @@
 const ClientModel = require("../models/client.js");
 
-exports.read = async (req, res) => {
+exports.read = async(req, res) => {
     const data = await ClientModel.read();
     res.render("client", { data: data[0] });
 };
 
-exports.addInformation = async (req, res) => {
-    const { nom, prenom, phone, wilaya, adr, gender, status, age } = req.body;
+exports.addInformation = async(req, res) => {
+    const { id_user, nom, prenom, phone, wilaya, adr, gender, status, age } =
+    req.body;
 
-    if (
+    if (!id_user ||
         !nom ||
         !prenom ||
         !phone ||
@@ -33,6 +34,7 @@ exports.addInformation = async (req, res) => {
         }
 
         const data = await ClientModel.write(
+            id_user,
             nom,
             prenom,
             phone,
