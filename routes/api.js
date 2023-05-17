@@ -12,6 +12,9 @@ const { addInformation, validInscrit } = clientController;
 const userController = require("../controllers/user");
 const { updateUser } = userController;
 
+const infoController = require("../controllers/infoapp");
+const { getVersion, getPopup } = infoController;
+
 const pubController = require("../controllers/pub");
 const { getPub } = pubController;
 
@@ -50,6 +53,9 @@ router.post("/checkcode", checkCodeApi);
 router.post("/updatepassword", updatePasswordApi);
 
 router.post("/updateuser", updateUser);
+
+router.get("/getversion", getVersion);
+router.get("/getpopup", getPopup);
 
 function authMiddleware(req, res, next) {
     // Get the token from the request headers
