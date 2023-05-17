@@ -7,7 +7,7 @@ const fileController = require("../controllers/files");
 const { getFiles } = fileController;
 
 const clientController = require("../controllers/client");
-const { addInformation } = clientController;
+const { addInformation, validInscrit } = clientController;
 
 const userController = require("../controllers/user");
 const { updateUser } = userController;
@@ -39,6 +39,7 @@ router.get("/categories", authMiddleware, readCategoriesApi);
 router.get("/check/:username", authMiddleware, checkUser);
 
 router.post("/addinformation", authMiddleware, addInformation);
+router.post("/validinscrit", authMiddleware, validInscrit);
 router.get("/getpub", authMiddleware, getPub);
 
 router.post("/signin", signInAPI);

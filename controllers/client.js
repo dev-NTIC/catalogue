@@ -50,3 +50,36 @@ exports.addInformation = async(req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+exports.validInscrit = async(req, res, next) => {
+    const { id, lat, lon, phone } = req.body;
+
+    if (!id || !lat || !lon || !phone) {
+        res.status(400).json({ message: "missing parameters" });
+        return;
+    }
+    try {
+        const checkClient = await ClientModel.checkClientID(id);
+
+        console.log(checkClient);
+
+        if (!checkClient) {
+            console.log("user doesn't exists !");
+            res.status(401).json({ message: "user doesn't exists !" });
+            return;
+        }
+
+        //? 403 check lat et Lon
+
+        const update = await ClientModel.updateClient(id);
+        console.log(update);
+        if (update == "ok") {
+            res.status(201).json({ message: "created" });
+        } else {
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

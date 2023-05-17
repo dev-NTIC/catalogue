@@ -34,4 +34,22 @@ module.exports = class ClientModel {
             return false;
         }
     }
+    static async checkClientID(id) {
+        const data = await db.execute(
+            "SELECT * FROM `information` WHERE `id_user`=?", [id]
+        );
+
+        if (data[0].length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    static async updateClient(id) {
+        await db.execute(
+            'UPDATE `information` SET `status`="confirmed" WHERE `id_user`= ?', [id]
+        );
+        return "ok";
+    }
 };
