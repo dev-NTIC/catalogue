@@ -54,8 +54,8 @@ router.post("/updatepassword", updatePasswordApi);
 
 router.post("/updateuser", updateUser);
 
-router.get("/getversion", getVersion);
-router.get("/getpopup", getPopup);
+router.get("/getversion", authMiddleware, getVersion);
+router.get("/getpopup", authMiddleware, getPopup);
 
 function authMiddleware(req, res, next) {
     // Get the token from the request headers
